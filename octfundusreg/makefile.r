@@ -51,6 +51,7 @@ if(dir.exists(".git") || dir.exists("../.git"))
 	td <- paste0(tempdir(), "/", package)
 	devtools::create(td, fields=description.fields)
 	file.copy(td, ".", recursive=TRUE)
+	unlink(td, recursive=TRUE)
 } else
 	devtools::create(package, fields=description.fields)
 
