@@ -42,7 +42,17 @@ description.fields <- list(
 	LazyData="true",	# to load the data automatically when needed (without calling data())
 	License="GPL (>= 2)")
 
-devtools::create(package, fields=description.fields)
+# devtools::create stops working if there is a .git dir in the current or parent directory
+# (yes, seriously!)
+# If that's the case, we temporarily generate the package in a temp dir and copy 
+# it here afterwards
+if(dir.exists(".git") || dir.exists("../.git"))
+{
+	td <- paste0(tempdir(), "/", package)
+	devtools::create(td, fields=description.fields)
+	file.copy(td, ".", recursive=TRUE)
+} else
+	devtools::create(package, fields=description.fields)
 
 # include data files stored in data:
 if(dir.exists("data"))
